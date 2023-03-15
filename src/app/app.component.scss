@@ -1,0 +1,23 @@
+* {
+  transition: all 300 ease-in-out;
+}
+
+.row {
+  display: flex;
+  .col {
+    flex: 1;
+  }
+}
+
+.ml-3 {
+  margin-left: 1rem;
+}
+.my-4 {
+  margin: 2rem 0;
+}
+
+.clickable:hover {
+  cursor: pointer;
+  background-color: #f9f9f6;
+  color: #111112;
+}
