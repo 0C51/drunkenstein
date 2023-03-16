@@ -1,6 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
 import { StoreState } from '../interfaces';
-import { getDrinksAction } from './actions';
+import {
+  getDrinksActionLoadError,
+  getDrinksActionLoadSuccess,
+  gettingDrinksAction,
+} from './actions';
 
 const initialState: StoreState = {
   isLoading: false,
@@ -11,5 +15,16 @@ const initialState: StoreState = {
 
 export const reducers = createReducer(
   initialState,
-  on(getDrinksAction, (state) => ({ ...state, isLoading: true }))
+  on(gettingDrinksAction, (state) => ({ ...state, isLoading: true })),
+  on(getDrinksActionLoadSuccess, (state, { drinks }) => ({
+    ...state,
+    drinks,
+    isLoading: false,
+    loadSuccess: true,
+  })),
+  on(getDrinksActionLoadError, (state) => ({
+    ...state,
+    isLoading: false,
+    loadError: true,
+  }))
 );

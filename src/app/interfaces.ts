@@ -27,5 +27,7 @@ export interface StoreState {
 }
 
 export enum ActionType {
-  getDrinks = '[App] Get Drinks',
+  gettingDrinks = '[App] Get Drinks',
+  getDrinksLoadSuccess = '[App] Get Drinks Load Success',
+  getDrinksLoadError = '[App] Get Drinks Load Error',
 }

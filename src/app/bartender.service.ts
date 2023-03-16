@@ -10,6 +10,7 @@ export class BartenderService {
   constructor(private http: HttpClient) {}
 
   getDrinks(): Observable<DrinkModel[]> {
+    // https://www.openbrewerydb.org/documentation#size
     let params = new HttpParams().append('size', 10);
     return this.http.get<DrinkModel[]>(
       'https://api.openbrewerydb.org/breweries/random',

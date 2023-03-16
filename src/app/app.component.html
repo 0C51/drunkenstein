@@ -24,13 +24,18 @@
 
   <!-- List START -->
   <div class="col">
-    <ul *ngFor="let drink of drinks">
-      <li>
-        <b class="clickable" (click)="editDrink(drink)">{{ drink?.name }}</b>
-        <span *ngIf="drink?.price" class="ml-3">{{ drink.price }}$</span>
-        <button class="ml-3" (click)="deleteDrink(drink.id)">Delete</button>
-      </li>
-    </ul>
+    {{ isloading$ | async }}
+    <div *ngIf="isloading$ | async">Loading...</div>
+    <ng-container *ngIf="loadSuccess$ | async">
+      <ul *ngFor="let drink of drinks$ | async">
+        <li>
+          <b class="clickable" (click)="editDrink(drink)">{{ drink?.name }}</b>
+          <span *ngIf="drink?.price" class="ml-3">{{ drink.price }}$</span>
+          <button class="ml-3" (click)="deleteDrink(drink.id)">Delete</button>
+        </li>
+      </ul>
+    </ng-container>
+    <div *ngIf="loadError$ | async">Error when loading data!</div>
   </div>
   <!-- List END -->
 </div>

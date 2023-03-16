@@ -1,18 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs';
-import { BartenderService } from './bartender.service';
-import { DrinkModel } from './interfaces';
-import { getDrinksAction } from './ngrx/actions';
+import { map, Observable } from 'rxjs';
+import { DrinkModel, StoreState } from './interfaces';
+import { gettingDrinksAction } from './ngrx/actions';
+import {
+  selectDrinks,
+  selectIsLoading,
+  selectLoadError,
+  selectLoadSuccess,
+} from './ngrx/selectors';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
   title = 'drunkenstein';
+  isloading$: Observable<boolean>;
+  drinks$: Observable<DrinkModel[]>;
+  loadSuccess$: Observable<boolean | null>;
+  loadError$: Observable<boolean | null>;
   drinks: DrinkModel[] = [];
   appState$ = this._store.pipe(map((state: any) => state));
 
@@ -25,20 +35,24 @@ export class AppComponent implements OnInit {
     price: this.priceControl,
   });
 
-  constructor(
-    private _bartenderService: BartenderService,
-    private _store: Store
-  ) {}
+  constructor(private _store: Store<StoreState>) {
+    this.isloading$ = this._store.select(selectIsLoading);
+    this.drinks$ = this._store.select(selectDrinks);
+    this.loadSuccess$ = this._store.select(selectLoadSuccess);
+    this.loadError$ = this._store.select(selectLoadError);
+  }
 
   ngOnInit(): void {
-    this._store.dispatch(getDrinksAction());
-    this._bartenderService.getDrinks().subscribe(
-      (drinks) =>
-        (this.drinks = drinks.map((drink: DrinkModel) => {
-          drink.price = drink.price ?? drink.name.length ?? 0;
-          return drink;
-        }))
-    );
+    this._store.dispatch(gettingDrinksAction());
+
+    // OLD:
+    // this._bartenderService.getDrinks().subscribe(
+    //   (drinks) =>
+    //     (this.drinks = drinks.map((drink: DrinkModel) => {
+    //       drink.price = drink.price ?? drink.name.length ?? 0;
+    //       return drink;
+    //     }))
+    // );
   }
 
   addDrink(): void {
