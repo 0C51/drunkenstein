@@ -19,15 +19,22 @@ export interface DrinkModel {
   price?: number;
 }
 
-export interface StoreState {
+export interface AppStateInterface {
+  drinks: StoreStateInterface;
+}
+
+export interface StoreStateInterface {
   isLoading: boolean;
   drinks: DrinkModel[];
   loadSuccess: boolean | null;
   loadError: boolean | null;
 }
 
-export enum ActionType {
+export enum ActionTypeEnum {
   gettingDrinks = '[App] Get Drinks',
   getDrinksLoadSuccess = '[App] Get Drinks Load Success',
   getDrinksLoadError = '[App] Get Drinks Load Error',
+  addDrink = '[App] Add Drink',
+  editDrink = '[App] Edit Drink',
+  deleteDrink = '[App] Delete Drink',
 }

@@ -1,9 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { map, Observable } from 'rxjs';
-import { DrinkModel, StoreState } from './interfaces';
-import { gettingDrinksAction } from './ngrx/actions';
+import { AppStateInterface, DrinkModel } from './interfaces';
+import {
+  addDrinkAction,
+  deleteDrinkAction,
+  editDrinkAction,
+  gettingDrinksAction,
+} from './ngrx/actions';
 import {
   selectDrinks,
   selectIsLoading,
@@ -19,12 +23,12 @@ import {
 })
 export class AppComponent implements OnInit {
   title = 'drunkenstein';
-  isloading$: Observable<boolean>;
-  drinks$: Observable<DrinkModel[]>;
-  loadSuccess$: Observable<boolean | null>;
-  loadError$: Observable<boolean | null>;
-  drinks: DrinkModel[] = [];
-  appState$ = this._store.pipe(map((state: any) => state));
+  isLoading$ = this._store.select(selectIsLoading);
+  drinks$ = this._store.select(selectDrinks);
+  loadSuccess$ = this._store.select(selectLoadSuccess);
+  loadError$ = this._store.select(selectLoadError);
+  // OLD:
+  // drinks: DrinkModel[] = [];
 
   idControl = new FormControl();
   nameControl = new FormControl(null, Validators.required);
@@ -35,12 +39,7 @@ export class AppComponent implements OnInit {
     price: this.priceControl,
   });
 
-  constructor(private _store: Store<StoreState>) {
-    this.isloading$ = this._store.select(selectIsLoading);
-    this.drinks$ = this._store.select(selectDrinks);
-    this.loadSuccess$ = this._store.select(selectLoadSuccess);
-    this.loadError$ = this._store.select(selectLoadError);
-  }
+  constructor(private _store: Store<AppStateInterface>) {}
 
   ngOnInit(): void {
     this._store.dispatch(gettingDrinksAction());
@@ -57,18 +56,36 @@ export class AppComponent implements OnInit {
 
   addDrink(): void {
     if (this.idControl.value) {
-      const editIndex = this.drinks.findIndex(
-        (drink: DrinkModel) => drink.id === this.idControl.value
+      this._store.dispatch(
+        editDrinkAction({
+          id: this.idControl.value,
+          name: this.nameControl.value,
+          price: this.priceControl.value,
+        })
       );
-      if (editIndex !== -1) {
-        const drinkToEdit = this.drinks[editIndex];
-        drinkToEdit.name = this.nameControl.value;
-        drinkToEdit.price = this.priceControl.value;
-      }
     } else {
-      this.idControl.setValue(Date.now().toString());
-      this.drinks.push(this.form.value);
+      this._store.dispatch(
+        addDrinkAction({
+          name: this.nameControl.value,
+          price: this.priceControl.value,
+        })
+      );
     }
+
+    // OLD:
+    // if (this.idControl.value) {
+    //   const editIndex = this.drinks.findIndex(
+    //     (drink: DrinkModel) => drink.id === this.idControl.value
+    //   );
+    //   if (editIndex !== -1) {
+    //     const drinkToEdit = this.drinks[editIndex];
+    //     drinkToEdit.name = this.nameControl.value;
+    //     drinkToEdit.price = this.priceControl.value;
+    //   }
+    // } else {
+    //   this.idControl.setValue(Date.now().toString());
+    //   this.drinks.push(this.form.value);
+    // }
     this.form.reset();
   }
 
@@ -76,13 +93,20 @@ export class AppComponent implements OnInit {
     this.form.reset();
   }
 
-  deleteDrink(drinkId: string): void {
-    const toBeRemovedId = this.drinks.findIndex(
-      (drink: DrinkModel) => drink.id === drinkId
+  deleteDrink(id: string): void {
+    this._store.dispatch(
+      deleteDrinkAction({
+        id,
+      })
     );
-    if (toBeRemovedId !== -1) {
-      this.drinks.splice(toBeRemovedId, 1);
-    }
+
+    // OLD:
+    // const toBeRemovedId = this.drinks.findIndex(
+    //   (drink: DrinkModel) => drink.id === drinkId
+    // );
+    // if (toBeRemovedId !== -1) {
+    //   this.drinks.splice(toBeRemovedId, 1);
+    // }
   }
 
   editDrink(drink: DrinkModel): void {

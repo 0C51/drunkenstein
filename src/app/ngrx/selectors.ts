@@ -1,22 +1,48 @@
 import { createSelector } from '@ngrx/store';
-import { StoreState } from '../interfaces';
+import { AppStateInterface, StoreStateInterface } from '../interfaces';
+
+// state.drinks => the name should be the same as in the module
+const selectState = (state: AppStateInterface) => state.drinks;
 
 export const selectIsLoading = createSelector(
-  (state: StoreState) => state.isLoading,
-  (isLoading) => isLoading
+  selectState,
+  (state: StoreStateInterface) => state.isLoading
 );
 
 export const selectDrinks = createSelector(
-  (state: StoreState) => state.drinks,
-  (drinks) => drinks
+  selectState,
+  (state: StoreStateInterface) => state.drinks
 );
 
 export const selectLoadSuccess = createSelector(
-  (state: StoreState) => state.loadSuccess,
-  (loadSuccess) => loadSuccess
+  selectState,
+  (state: StoreStateInterface) => state.loadSuccess
 );
 
 export const selectLoadError = createSelector(
-  (state: StoreState) => state.loadError,
-  (loadError) => loadError
+  selectState,
+  (state: StoreStateInterface) => state.loadError
 );
+
+// Other way
+// export const selectRootState = createFeatureSelector<StoreState>('app');
+
+// export const selectIsLoading = createSelector(
+//   selectRootState,
+//   (state: StoreStateInterface) => state.isLoading
+// );
+
+// export const selectDrinks = createSelector(
+//   selectRootState,
+//   (state: StoreStateInterface) => state.drinks
+// );
+
+// export const selectLoadSuccess = createSelector(
+//   selectRootState,
+//   (state: StoreStateInterface) => state.loadSuccess
+// );
+
+// export const selectLoadError = createSelector(
+//   selectRootState,
+//   (state: StoreStateInterface) => state.loadError
+// );

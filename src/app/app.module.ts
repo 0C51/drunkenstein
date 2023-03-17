@@ -10,7 +10,7 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DrinksEffects } from './ngrx/effects';
-import { reducers } from './ngrx/reducers';
+import { reducers as drinkReducers } from './ngrx/reducers';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,7 +19,7 @@ import { reducers } from './ngrx/reducers';
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    StoreModule.forRoot({ app: reducers }),
+    StoreModule.forRoot({ drinks: drinkReducers }),
     EffectsModule.forRoot([DrinksEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,

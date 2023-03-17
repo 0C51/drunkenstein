@@ -13,7 +13,7 @@
     </div>
     <div class="my-4">
       <label>Drink's price ($):</label>
-      <input type="number" class="ml-3" [formControl]="priceControl" />
+      <input type="number" min="0" class="ml-3" [formControl]="priceControl" />
     </div>
     <button [disabled]="form.invalid" (click)="addDrink()">
       {{ idControl.value ? "Edit" : "Add" }}
@@ -24,8 +24,7 @@
 
   <!-- List START -->
   <div class="col">
-    {{ isloading$ | async }}
-    <div *ngIf="isloading$ | async">Loading...</div>
+    <div *ngIf="isLoading$ | async">Loading...</div>
     <ng-container *ngIf="loadSuccess$ | async">
       <ul *ngFor="let drink of drinks$ | async">
         <li>
