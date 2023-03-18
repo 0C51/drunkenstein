@@ -25,7 +25,7 @@ export const selectLoadError = createSelector(
 );
 
 // Other way
-// export const selectRootState = createFeatureSelector<StoreState>('app');
+// export const selectRootState = createFeatureSelector<StoreState>('drinks');
 
 // export const selectIsLoading = createSelector(
 //   selectRootState,

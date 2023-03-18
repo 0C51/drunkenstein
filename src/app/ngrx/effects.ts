@@ -2,8 +2,12 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { BartenderService } from '../bartender.service';
-import { ActionTypeEnum } from '../interfaces';
-import { gettingDrinksAction } from './actions';
+import { DrinkModel } from '../interfaces';
+import {
+  getDrinksActionLoadErrorAction,
+  getDrinksActionLoadSuccessAction,
+  gettingDrinksAction,
+} from './actions';
 
 @Injectable()
 export class DrinksEffects {
@@ -14,11 +18,10 @@ export class DrinksEffects {
       ofType(gettingDrinksAction),
       switchMap(() => {
         return this.bartender.getDrinks().pipe(
-          map((drinks) => ({
-            type: ActionTypeEnum.getDrinksLoadSuccess,
-            drinks,
-          })),
-          catchError(() => of({ type: ActionTypeEnum.getDrinksLoadError }))
+          map((drinks: DrinkModel[]) =>
+            getDrinksActionLoadSuccessAction({ drinks })
+          ),
+          catchError(() => of(getDrinksActionLoadErrorAction()))
         );
       })
     );
